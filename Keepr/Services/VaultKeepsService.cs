@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Keepr.Models;
 using Keepr.Repositories;
 
@@ -8,25 +7,43 @@ namespace Keepr.Services
   public class VaultKeepsService
   {
     private readonly VaultKeepsRepository _vaultKeepsRepository;
+    private readonly KeepsService _keepsService;
+    private readonly KeepsRepository _keepsRepository;
+    private readonly VaultsService _vaultsService;
 
-    public VaultKeepsService(VaultKeepsRepository vaultKeepsRepository)
+    public VaultKeepsService(VaultKeepsRepository vaultKeepsRepository, KeepsService keepsService, KeepsRepository keepsRepository, VaultsService vaultsService)
     {
       _vaultKeepsRepository = vaultKeepsRepository;
+      _keepsService = keepsService;
+      _keepsRepository = keepsRepository;
+      _vaultsService = vaultsService;
     }
 
     internal VaultKeep Create(string id, VaultKeep vaultKeepData)
     {
-      throw new NotImplementedException();
+      vaultKeepData.CreatorId = id;
+      Vault foundVault = _vaultsService.GetById(vaultKeepData.VaultId);
+      Keep foundKeep = _keepsService.GetById(vaultKeepData.KeepId);
+      if (foundVault.CreatorId != id)
+      {
+        throw new Exception("You did not create this vault so you cannot put something in it");
+      }
+      foundKeep.Kept++;
+      _keepsRepository.Update(foundKeep);
+      return _vaultKeepsRepository.Create(vaultKeepData);
     }
 
-    internal List<VaultKeep> GetAll()
-    {
-      throw new NotImplementedException();
-    }
 
-    internal void Delete(string id1, int id2)
+
+    internal void Delete(string userId, int id)
     {
-      throw new NotImplementedException();
+      VaultKeep toDelete = _vaultKeepsRepository.GetById(id);
+      Vault foundVault = _vaultsService.GetById(toDelete.VaultId);
+      if (userId != foundVault.CreatorId)
+      {
+        throw new Exception("You did not create this vault so you cannot remove keeps from it");
+      }
+      _vaultKeepsRepository.Delete(id);
     }
   }
 }

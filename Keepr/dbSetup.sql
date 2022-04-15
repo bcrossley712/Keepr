@@ -36,3 +36,9 @@ CREATE TABLE IF NOT EXISTS vaultKeeps(
   FOREIGN KEY (keepId) REFERENCES keeps (id) ON DELETE CASCADE,
   FOREIGN KEY (vaultId) REFERENCES vaults (id) ON DELETE CASCADE
 ) default charset utf8 COMMENT '';
+ALTER Table
+  vaultKeeps
+ADD
+  creatorId VARCHAR(255) NOT NULL,
+ADD
+  FOREIGN KEY (creatorId) REFERENCES accounts (id) ON DELETE CASCADE;

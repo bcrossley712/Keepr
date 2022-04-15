@@ -7,10 +7,12 @@ namespace Keepr.Services
 {
   public class KeepsService
   {
+    private readonly VaultsRepository _vaultsRepository;
     private readonly KeepsRepository _keepsRepository;
 
-    public KeepsService(KeepsRepository keepsRepository)
+    public KeepsService(VaultsRepository vaultsRepository, KeepsRepository keepsRepository)
     {
+      _vaultsRepository = vaultsRepository;
       _keepsRepository = keepsRepository;
     }
 
@@ -39,6 +41,12 @@ namespace Keepr.Services
       _keepsRepository.Update(found);
       return found;
     }
+
+    internal List<VaultsKeepsViewModel> GetVaultsKeeps(int vaultId)
+    {
+      return _keepsRepository.GetVaultsKeeps(vaultId);
+    }
+
 
     internal Keep Update(string userId, Keep updateData)
     {

@@ -35,7 +35,7 @@ namespace Keepr.Repositories
       k.*,
       a.*
       FROM keeps k
-      JOIN accounts a ON k.creatorId = a.id
+      JOIN accounts a ON k.creatorId = a.id;
       ";
       return _db.Query<Keep, Account, Keep>(sql, (k, a) =>
       {
@@ -44,6 +44,25 @@ namespace Keepr.Repositories
       }).ToList();
     }
 
+    internal List<VaultsKeepsViewModel> GetVaultsKeeps(int vaultId)
+    {
+      string sql = @"
+      SELECT
+        a.*,
+        k.*,
+        vk.*
+      FROM vaultKeeps vk
+      JOIN keeps k ON k.id = vk.keepId
+      JOIN accounts a ON a.id = vk.creatorId
+      WHERE vk.vaultId = @vaultId;
+      ";
+      return _db.Query<Account, VaultsKeepsViewModel, VaultKeep, VaultsKeepsViewModel>(sql, (a, k, vk) =>
+      {
+        k.Creator = a;
+        k.VaultKeepId = vk.Id;
+        return k;
+      }, new { vaultId }).ToList();
+    }
     internal Keep GetById(int id)
     {
       string sql = @"
@@ -52,7 +71,7 @@ namespace Keepr.Repositories
       a.*
       FROM keeps k
       JOIN accounts a ON k.creatorId = a.id
-      WHERE k.id = @id
+      WHERE k.id = @id;
       ";
       return _db.Query<Keep, Account, Keep>(sql, (k, a) =>
       {
@@ -78,7 +97,7 @@ namespace Keepr.Repositories
 
     internal void Delete(int keepId)
     {
-      string sql = "DELETE FROM keeps WHERE id = @keepId LIMIT 1";
+      string sql = "DELETE FROM keeps WHERE id = @keepId LIMIT 1;";
       _db.Execute(sql, new { keepId });
     }
   }
