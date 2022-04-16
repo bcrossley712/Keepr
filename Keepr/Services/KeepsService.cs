@@ -29,7 +29,7 @@ namespace Keepr.Services
       return _keepsRepository.GetAll();
     }
 
-    internal Keep GetById(int id)
+    internal Keep GetById(string userId, int id)
     {
       Keep found = _keepsRepository.GetById(id);
       if (found == null)
@@ -37,20 +37,34 @@ namespace Keepr.Services
         throw new Exception("Invalid keep Id");
       }
       // NOTE this is to update views with every view
-      found.Views++;
-      _keepsRepository.Update(found);
+      if (found.CreatorId != userId)
+      {
+        found.Views++;
+        _keepsRepository.Update(found);
+      }
       return found;
     }
 
     internal List<VaultsKeepsViewModel> GetVaultsKeeps(int vaultId)
     {
+      // NOTE must run check to only return keeps if vault isPrivate = false and I guess this works
+      Vault found = _vaultsRepository.GetById(vaultId);
+      if (found.IsPrivate == true)
+      {
+        throw new Exception("Not allowed to view this vault");
+      }
       return _keepsRepository.GetVaultsKeeps(vaultId);
+    }
+
+    internal List<Keep> GetProfilesKeeps(string profileId)
+    {
+      return _keepsRepository.GetProfilesKeeps(profileId);
     }
 
 
     internal Keep Update(string userId, Keep updateData)
     {
-      Keep original = GetById(updateData.Id);
+      Keep original = GetById(userId, updateData.Id);
       if (original.CreatorId != userId)
       {
         throw new Exception("You are not allowed to update this keep");
@@ -62,12 +76,12 @@ namespace Keepr.Services
       original.Kept = updateData.Kept != null ? updateData.Kept : original.Kept;
       _keepsRepository.Update(original);
       // NOTE this get is to return the correct updatedAt date and time
-      return GetById(updateData.Id);
+      return GetById(userId, updateData.Id);
     }
 
     internal void Delete(string userId, int keepId)
     {
-      Keep found = GetById(keepId);
+      Keep found = GetById(userId, keepId);
       if (found.CreatorId != userId)
       {
         throw new Exception("You are not allowed to delete this keep");

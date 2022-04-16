@@ -25,7 +25,7 @@ namespace Keepr.Controllers
     {
       try
       {
-        Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+        Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
         Keep keep = _keepsService.Create(userInfo.Id, keepData);
         keep.Creator = userInfo;
         return Created($"api/keeps/{keep.Id}", keep);
@@ -49,11 +49,12 @@ namespace Keepr.Controllers
       }
     }
     [HttpGet("{id}")]
-    public ActionResult<Keep> GetById(int id)
+    public async Task<ActionResult<Keep>> GetById(int id)
     {
       try
       {
-        Keep keep = _keepsService.GetById(id);
+        Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+        Keep keep = _keepsService.GetById(userInfo?.Id, id);
         return Ok(keep);
       }
       catch (Exception e)

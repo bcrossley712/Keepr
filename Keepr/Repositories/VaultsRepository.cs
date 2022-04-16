@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Dapper;
@@ -28,6 +29,26 @@ namespace Keepr.Repositories
       return vaultData;
     }
 
+    internal List<Vault> GetAccountsVaults(string accountId)
+    {
+      string sql = @"
+      SELECT * 
+      FROM vaults v 
+      WHERE v.creatorId = @accountId
+      ";
+      return _db.Query<Vault>(sql, new { accountId }).ToList();
+    }
+
+    internal List<Vault> GetProfileVaults(string accountId)
+    {
+      string sql = @"
+      SELECT * 
+      FROM vaults v 
+      WHERE v.creatorId = @accountId AND v.isPrivate IS FALSE
+      ";
+      return _db.Query<Vault>(sql, new { accountId }).ToList();
+    }
+
     internal Vault GetById(int id)
     {
       string sql = @"
@@ -38,7 +59,7 @@ namespace Keepr.Repositories
       JOIN accounts a ON v.creatorId = a.id
       WHERE v.id = @id
       ";
-      return _db.Query<Vault, Account, Vault>(sql, (v, a) =>
+      return _db.Query<Vault, Profile, Vault>(sql, (v, a) =>
       {
         v.Creator = a;
         return v;
