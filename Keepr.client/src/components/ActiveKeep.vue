@@ -62,7 +62,7 @@
             class="mdi mdi-delete fs-3 text-danger"
             title="Delete Keep"
           ></i>
-          <div>
+          <div class="selectable" @click="goTo">
             <img
               :src="activeKeep.creator?.picture"
               alt=""
@@ -84,6 +84,7 @@ import { logger } from "../utils/Logger"
 import { AppState } from "../AppState"
 import { vaultsService } from "../services/VaultsService"
 import { useRouter } from "vue-router"
+import { Modal } from "bootstrap"
 export default {
   setup() {
     const router = useRouter()
@@ -105,6 +106,10 @@ export default {
           logger.error(error)
           Pop.toast(error.message, 'error')
         }
+      },
+      goTo() {
+        Modal.getOrCreateInstance(document.getElementById("active-keep")).hide()
+        router.push({ name: "Profile", params: { id: AppState.activeKeep?.creatorId } })
       }
     }
   }

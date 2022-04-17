@@ -20,7 +20,6 @@ export default {
     onMounted(async () => {
       try {
         await keepsService.getKeeps()
-        await vaultsService.getAccountVaults()
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')

@@ -6,7 +6,12 @@
       </div>
     </div>
     <h2 class="mb-0 mt-2 px-3">
-      Vaults <i class="mdi mdi-plus text-primary"></i>
+      Vaults
+      <i
+        v-if="account.id == route.params.id"
+        class="mdi mdi-plus text-primary selectable"
+        title="Create Vault"
+      ></i>
     </h2>
     <div v-if="account.id == route.params.id" class="px-md-3 px-sm-1 masonry">
       <div v-for="v in myVaults" :key="v.id" class="">
@@ -19,7 +24,12 @@
       </div>
     </div>
     <h2 class="mb-0 mt-2 px-3">
-      Keeps <i class="mdi mdi-plus text-primary"></i>
+      Keeps
+      <i
+        v-if="account.id == route.params.id"
+        class="mdi mdi-plus text-primary selectable"
+        title="Create Keep"
+      ></i>
     </h2>
     <div class="px-md-3 px-sm-1 masonry">
       <div v-for="k in keeps" :key="k.id" class="">

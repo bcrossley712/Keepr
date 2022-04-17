@@ -42,3 +42,13 @@ ADD
   creatorId VARCHAR(255) NOT NULL,
 ADD
   FOREIGN KEY (creatorId) REFERENCES accounts (id) ON DELETE CASCADE;
+SELECT
+  k.*,
+  vk.id AS vaultKeepId,
+  a.*
+FROM
+  keeps k
+  JOIN vaultKeeps vk ON vk.keepId = k.id
+  JOIN accounts a ON k.creatorId = a.id
+WHERE
+  k.id = 251;

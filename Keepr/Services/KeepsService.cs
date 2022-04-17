@@ -45,13 +45,13 @@ namespace Keepr.Services
       return found;
     }
 
-    internal List<VaultsKeepsViewModel> GetVaultsKeeps(int vaultId)
+    internal List<VaultsKeepsViewModel> GetVaultsKeeps(string userId, int vaultId)
     {
-      // NOTE must run check to only return keeps if vault isPrivate = false and I guess this works
+      // NOTE must run check to only return keeps if vault isPrivate = false
       Vault found = _vaultsRepository.GetById(vaultId);
-      if (found.IsPrivate == true)
+      if (found.IsPrivate == true && userId != found.CreatorId)
       {
-        throw new Exception("Not allowed to view this vault");
+        throw new Exception("Not allowed to get the keeps in this vault");
       }
       return _keepsRepository.GetVaultsKeeps(vaultId);
     }
