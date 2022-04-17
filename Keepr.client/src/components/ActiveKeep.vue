@@ -41,7 +41,10 @@
         </div>
         <div class="border-top border-secondary w-100 px-md-5"></div>
         <div class="div d-flex justify-content-between align-items-center">
-          <div class="dropdown">
+          <div v-if="isKept?.vaultId">
+            <button class="btn btn-outline-danger">REMOVE FROM VAULT</button>
+          </div>
+          <div v-else class="dropdown">
             <button
               class="btn btn-outline-primary dropdown-toggle"
               type="button"
@@ -95,6 +98,7 @@ export default {
       activeKeep: computed(() => AppState.activeKeep),
       account: computed(() => AppState.account),
       myVaults: computed(() => AppState.myVaults),
+      isKept: computed(() => AppState.keeps.find(k => k.id == AppState.activeKeep.id)),
       async addKeepToVault(vaultId) {
         try {
           let newVaultKeep = {

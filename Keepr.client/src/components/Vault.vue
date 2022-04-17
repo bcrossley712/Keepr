@@ -11,8 +11,6 @@
       selectable
       select-grow
     "
-    data-bs-toggle="modal"
-    data-bs-target="#active-vault"
     @click="setActive"
   >
     <div class="w-100 p-2">
@@ -29,6 +27,7 @@ import { ref } from "@vue/reactivity"
 import Pop from "../utils/Pop"
 import { logger } from "../utils/Logger"
 import { AppState } from "../AppState"
+import { useRouter } from "vue-router"
 export default {
   props: {
     vault: {
@@ -36,11 +35,13 @@ export default {
       required: true
     }
   },
-  setup() {
+  setup(props) {
+    const router = useRouter()
     return {
       // backgroundImg: computed(() => `url('https://picsum.photos/300')`),
       setActive() {
         AppState.activeVault = props.vault
+        router.push({ name: "Vault", params: { id: props.vault.id } })
       }
     }
   }

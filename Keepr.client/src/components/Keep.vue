@@ -20,6 +20,7 @@
         {{ keep.name }}
       </h4>
       <img
+        v-if="route.name != 'Profile'"
         :src="keep.creator?.picture"
         :alt="keep.creator?.name + ' picture'"
         class="img-small rounded-circle bg-light"
@@ -35,6 +36,7 @@ import Pop from "../utils/Pop"
 import { logger } from "../utils/Logger"
 import { AppState } from "../AppState"
 import { keepsService } from "../services/KeepsService"
+import { useRoute } from "vue-router"
 export default {
   props: {
     keep: {
@@ -43,8 +45,9 @@ export default {
     }
   },
   setup(props) {
-
+    const route = useRoute()
     return {
+      route,
       backgroundImg: computed(() => `url('${props.keep.img}')`),
       async setActive() {
         try {
