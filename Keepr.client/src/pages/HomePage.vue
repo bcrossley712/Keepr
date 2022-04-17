@@ -14,11 +14,13 @@ import { logger } from "../utils/Logger"
 import Pop from "../utils/Pop"
 import { keepsService } from "../services/KeepsService";
 import { AppState } from "../AppState";
+import { vaultsService } from "../services/VaultsService";
 export default {
   setup() {
     onMounted(async () => {
       try {
         await keepsService.getKeeps()
+        await vaultsService.getAccountVaults()
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')

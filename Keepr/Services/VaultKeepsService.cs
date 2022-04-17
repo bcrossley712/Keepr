@@ -21,6 +21,10 @@ namespace Keepr.Services
 
     internal VaultKeep Create(string userId, VaultKeep vaultKeepData)
     {
+      VaultKeep exists = _vaultKeepsRepository.Get(vaultKeepData.VaultId, vaultKeepData.KeepId);
+      if(exists != null){
+        return exists;
+      }
       vaultKeepData.CreatorId = userId;
       Vault foundVault = _vaultsService.GetById(userId, vaultKeepData.VaultId);
       Keep foundKeep = _keepsService.GetById(userId, vaultKeepData.KeepId);

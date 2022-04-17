@@ -14,16 +14,16 @@ const routes = [
 
   },
   {
-    path: '/vault/{id}',
+    path: '/vault/:id',
     name: 'Vault',
     component: loadPage('VaultPage'),
     beforeEnter: authSettled
   },
   {
-    path: '/account',
-    name: 'Account',
-    component: loadPage('AccountPage'),
-    beforeEnter: authGuard
+    path: '/profile/:id',
+    name: 'Profile',
+    component: loadPage('ProfilePage'),
+    beforeEnter: authSettled
   }
 ]
 

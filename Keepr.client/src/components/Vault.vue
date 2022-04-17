@@ -12,47 +12,35 @@
       select-grow
     "
     data-bs-toggle="modal"
-    data-bs-target="#active-keep"
+    data-bs-target="#active-vault"
     @click="setActive"
   >
-    <div class="d-flex justify-content-between align-items-center w-100 p-2">
+    <div class="w-100 p-2">
       <h4 class="m-0 text-shadow">
-        {{ keep.name }}
+        {{ vault.name }}
       </h4>
-      <img
-        :src="keep.creator?.picture"
-        :alt="keep.creator?.name + ' picture'"
-        class="img-small rounded-circle bg-light"
-      />
     </div>
   </div>
 </template>
 
 
 <script>
-import { computed, ref } from "@vue/reactivity"
+import { ref } from "@vue/reactivity"
 import Pop from "../utils/Pop"
 import { logger } from "../utils/Logger"
 import { AppState } from "../AppState"
-import { keepsService } from "../services/KeepsService"
 export default {
   props: {
-    keep: {
+    vault: {
       type: Object,
       required: true
     }
   },
-  setup(props) {
-
+  setup() {
     return {
-      backgroundImg: computed(() => `url('${props.keep.img}')`),
-      async setActive() {
-        try {
-          await keepsService.getKeepById(props.keep.id)
-        } catch (error) {
-          logger.error(error)
-          Pop.toast(error.message, 'error')
-        }
+      // backgroundImg: computed(() => `url('https://picsum.photos/300')`),
+      setActive() {
+        AppState.activeVault = props.vault
       }
     }
   }
