@@ -129,7 +129,6 @@ export default {
         } catch (error) {
           logger.error(error)
           Pop.toast('You already have this keep in that vault', 'error', 'center')
-          Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
         }
       },
       async removeVaultKeep() {
