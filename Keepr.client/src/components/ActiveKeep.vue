@@ -42,9 +42,17 @@
         <div class="border-top border-secondary w-100 px-md-5"></div>
         <div class="div d-flex justify-content-between align-items-center">
           <div
-            v-if="user.isAuthenticated && route.params != 'Vault'"
-            class="dropdown"
+            v-if="!user.isAuthenticated"
+            class="btn btn-outline-primary text-dark"
           >
+            <Login />
+          </div>
+          <div v-else-if="route.name == 'Vault'">
+            <button class="btn btn-outline-danger" @click="removeVaultKeep">
+              REMOVE FROM VAULT
+            </button>
+          </div>
+          <div v-else class="dropdown">
             <button
               class="btn btn-outline-primary dropdown-toggle text-dark"
               type="button"
@@ -63,11 +71,6 @@
                 <a class="dropdown-item selectable">{{ v.name }}</a>
               </li>
             </ul>
-          </div>
-          <div v-else-if="route.params == 'Vault'">
-            <button class="btn btn-outline-danger" @click="removeVaultKeep">
-              REMOVE FROM VAULT
-            </button>
           </div>
           <i
             v-if="activeKeep.creator?.id == account.id"
@@ -125,7 +128,8 @@ export default {
           Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
         } catch (error) {
           logger.error(error)
-          Pop.toast(error.message, 'error')
+          Pop.toast('You already have this keep in that vault', 'error', 'center')
+          Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
         }
       },
       async removeVaultKeep() {
