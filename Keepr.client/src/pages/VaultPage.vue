@@ -59,7 +59,7 @@ export default {
     })
     return {
       account: computed(() => AppState.account),
-      keeps: computed(() => AppState.keeps),
+      keeps: computed(() => AppState.vaultKeeps),
       activeVault: computed(() => AppState.activeVault),
       async deleteVault() {
         try {
