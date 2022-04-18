@@ -53,13 +53,14 @@ namespace Keepr.Repositories
         vk.*
       FROM vaultKeeps vk
       JOIN keeps k ON k.id = vk.keepId
-      JOIN accounts a ON a.id = vk.creatorId
+      JOIN accounts a ON a.id = k.creatorId
       WHERE vk.vaultId = @vaultId;
       ";
       return _db.Query<Profile, VaultsKeepsViewModel, VaultKeep, VaultsKeepsViewModel>(sql, (a, k, vk) =>
       {
         k.Creator = a;
         k.VaultId = vk.VaultId;
+        k.VaultKeepId = vk.Id;
         return k;
       }, new { vaultId }).ToList();
     }

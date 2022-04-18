@@ -3,7 +3,7 @@
     class="
       bg-img
       rounded
-      elevation-5
+      elevation-3
       my-2
       d-flex
       align-items-end

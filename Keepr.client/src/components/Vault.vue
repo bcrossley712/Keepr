@@ -1,7 +1,8 @@
 <template>
   <div
     class="
-      bg-img
+      bg-img bg-secondary
+      darken-10
       rounded
       elevation-5
       my-2
@@ -41,6 +42,7 @@ export default {
       // backgroundImg: computed(() => `url('https://picsum.photos/300')`),
       setActive() {
         AppState.activeVault = props.vault
+        AppState.keeps = []
         router.push({ name: "Vault", params: { id: props.vault.id } })
       }
     }

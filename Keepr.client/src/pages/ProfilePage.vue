@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { computed, onMounted, watchEffect } from 'vue'
+import { computed, onMounted, watch, watchEffect } from 'vue'
 import { AppState } from '../AppState'
 import { logger } from "../utils/Logger"
 import Pop from "../utils/Pop"
@@ -75,11 +75,13 @@ export default {
   components: { Modal },
   setup() {
     const route = useRoute()
-    onMounted(async () => {
+    watchEffect(async () => {
       try {
-        await accountService.getProfile(route.params.id)
-        await keepsService.getProfilesKeeps(route.params.id)
-        await vaultsService.getProfilesVaults(route.params.id)
+        if (route.name == 'Profile') {
+          await accountService.getProfile(route.params.id)
+          await keepsService.getProfilesKeeps(route.params.id)
+          await vaultsService.getProfilesVaults(route.params.id)
+        }
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')

@@ -42,11 +42,13 @@
         <div class="border-top border-secondary w-100 px-md-5"></div>
         <div class="div d-flex justify-content-between align-items-center">
           <div v-if="isKept?.vaultId">
-            <button class="btn btn-outline-danger">REMOVE FROM VAULT</button>
+            <button class="btn btn-outline-danger" @click="removeVaultKeep">
+              REMOVE FROM VAULT
+            </button>
           </div>
           <div v-else class="dropdown">
             <button
-              class="btn btn-outline-primary dropdown-toggle"
+              class="btn btn-outline-primary dropdown-toggle text-dark"
               type="button"
               id="dropdownMenuButton1"
               data-bs-toggle="dropdown"
@@ -55,15 +57,20 @@
               ADD TO VAULT
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li v-for="v in myVaults" :key="v.id" @click="addToVault(v.id)">
+              <li
+                v-for="v in myVaults"
+                :key="v.id"
+                @click="createVaultKeep(v.id)"
+              >
                 <a class="dropdown-item selectable">{{ v.name }}</a>
               </li>
             </ul>
           </div>
           <i
             v-if="activeKeep.creator?.id == account.id"
-            class="mdi mdi-delete fs-3 text-danger"
+            class="mdi mdi-delete fs-3 text-danger selectable"
             title="Delete Keep"
+            @click="deleteKeep"
           ></i>
           <div class="selectable" @click="goTo">
             <img
@@ -88,6 +95,8 @@ import { AppState } from "../AppState"
 import { vaultsService } from "../services/VaultsService"
 import { useRouter } from "vue-router"
 import { Modal } from "bootstrap"
+import { vaultKeepsService } from "../services/VaultKeepsService"
+import { keepsService } from "../services/KeepsService"
 export default {
   setup() {
     const router = useRouter()
@@ -99,13 +108,40 @@ export default {
       account: computed(() => AppState.account),
       myVaults: computed(() => AppState.myVaults),
       isKept: computed(() => AppState.keeps.find(k => k.id == AppState.activeKeep.id)),
-      async addKeepToVault(vaultId) {
+      async createVaultKeep(vaultId) {
         try {
           let newVaultKeep = {
             vaultId: vaultId,
             keepId: AppState.activeKeep.id
           }
-          await vaultsService.addKeepToVault(newVaultKeep)
+          await vaultKeepsService.createVaultKeep(newVaultKeep)
+          Pop.toast('Added to your vault', 'success')
+          Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+          router.push({ name: "Vault", params: { id: vaultId } })
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      },
+      async removeVaultKeep() {
+        try {
+          if (await Pop.confirm()) {
+            await vaultKeepsService.deleteVaultKeep(AppState.activeKeep.id)
+            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+            Pop.toast('Removed from Vault', 'success')
+          }
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      },
+      async deleteKeep() {
+        try {
+          if (await Pop.confirm()) {
+            await keepsService.deleteKeep(AppState.activeKeep.id)
+            Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
+            Pop.toast('Keep Deleted', 'success')
+          }
         } catch (error) {
           logger.error(error)
           Pop.toast(error.message, 'error')

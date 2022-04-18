@@ -13,23 +13,22 @@ class VaultsService {
     logger.log('[getProfilesVaults]', res.data)
     AppState.vaults = res.data
   }
-
-  // NOTE I'm trying to accomplish gathering all the account's vault-keeps and replacing the keep in the Appstate with a keepViewModel so it has a vaultKeep Id on it to make for easy checking on the front end.  We'll see... YEAH IT WORKS
-  async getMyVaultsKeeps() {
-    AppState.myVaults.forEach(async v => {
-      const res = await api.get(`api/vaults/${v.id}/keeps`)
-      // logger.log('[getMyVaultsKeeps]', res.data)
-      res.data.forEach(vk => {
-        const found = AppState.keeps.find(fv => fv.id == vk.id)
-        const index = AppState.keeps.findIndex(k => k.id == found.id)
-        AppState.keeps.splice(index, 1, vk)
-      })
-    })
+  async getById(vaultId) {
+    const res = await api.get(`api/vaults/${vaultId}`)
+    logger.log('[getVaultById]', res.data)
+    AppState.activeVault = res.data
+    return res.data
   }
-  async createVaultKeep(vaultKeepData) {
-    const res = await api.post(`api/vaultkeeps`, vaultKeepData)
-    logger.log('[createVaultKeep]', res.data)
-    AppState.vaultKeeps.push(res.data)
+  async createVault(vaultData) {
+    const res = await api.post('api/vaults', vaultData)
+    logger.log('[createVault]', res.data)
+    AppState.myVaults.push(res.data)
+  }
+  async deleteVault(vaultId) {
+    const res = await api.delete(`api/vaults/${vaultId}`)
+    logger.log('[deleteVault]', res.data)
+    AppState.myVaults = AppState.myVaults.filter(v => v.id != vaultId)
+    AppState.activeVault = {}
   }
 }
 export const vaultsService = new VaultsService()
