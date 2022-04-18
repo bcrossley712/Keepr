@@ -1,7 +1,7 @@
 <template>
   <div
     class="
-      bg-img
+      object-fit-cover
       rounded
       elevation-3
       my-2
@@ -15,7 +15,17 @@
     data-bs-target="#active-keep"
     @click="setActive"
   >
-    <div class="d-flex justify-content-between align-items-center w-100 p-2">
+    <img :src="keep.img" alt="" class="img-fluid relative rounded" />
+    <div
+      class="
+        d-flex
+        justify-content-between
+        align-items-center
+        w-100
+        p-2
+        absolute
+      "
+    >
       <h4 class="m-0 text-shadow">
         {{ keep.name }}
       </h4>

@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { authGuard, authSettled } from '@bcwdev/auth0provider-client'
+import { onBeforeMount } from "vue"
 
 function loadPage(page) {
   return () => import(`./pages/${page}.vue`)

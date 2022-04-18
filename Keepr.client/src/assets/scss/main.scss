@@ -67,3 +67,12 @@ form:invalid button[type="submit"] {
 .object-fit-cover {
   object-fit: cover;
 }
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+  bottom: 0px;
+}

@@ -48,13 +48,13 @@ export default {
     watchEffect(async () => {
       try {
         if (route.name == 'Vault') {
-          const vault = await vaultsService.getById(route.params.id)
-
+          await vaultsService.getById(route.params.id)
           await vaultKeepsService.getVaultsKeeps(route.params.id)
         }
       } catch (error) {
         logger.error(error)
-        Pop.toast(error.message, 'error')
+        Pop.toast('You cannot enter this vault!', 'error', 'center', 4000)
+        router.push({ name: 'Home' })
       }
     })
     return {

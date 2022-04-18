@@ -1,7 +1,7 @@
 <template>
   <div
     class="
-      bg-img bg-secondary
+      bg-secondary
       darken-10
       rounded
       elevation-5
@@ -14,7 +14,8 @@
     "
     @click="setActive"
   >
-    <div class="w-100 p-2">
+    <img :src="vault.img" alt="" class="relative img-fluid rounded" />
+    <div class="w-100 p-2 absolute">
       <h4 class="m-0 text-shadow">
         {{ vault.name }}
       </h4>
