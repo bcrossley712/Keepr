@@ -41,12 +41,10 @@
         </div>
         <div class="border-top border-secondary w-100 px-md-5"></div>
         <div class="div d-flex justify-content-between align-items-center">
-          <div v-if="isKept?.vaultId">
-            <button class="btn btn-outline-danger" @click="removeVaultKeep">
-              REMOVE FROM VAULT
-            </button>
-          </div>
-          <div v-else class="dropdown">
+          <div
+            v-if="user.isAuthenticated && route.params != 'Vault'"
+            class="dropdown"
+          >
             <button
               class="btn btn-outline-primary dropdown-toggle text-dark"
               type="button"
@@ -65,6 +63,11 @@
                 <a class="dropdown-item selectable">{{ v.name }}</a>
               </li>
             </ul>
+          </div>
+          <div v-else-if="route.params == 'Vault'">
+            <button class="btn btn-outline-danger" @click="removeVaultKeep">
+              REMOVE FROM VAULT
+            </button>
           </div>
           <i
             v-if="activeKeep.creator?.id == account.id"
@@ -93,20 +96,23 @@ import Pop from "../utils/Pop"
 import { logger } from "../utils/Logger"
 import { AppState } from "../AppState"
 import { vaultsService } from "../services/VaultsService"
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { Modal } from "bootstrap"
 import { vaultKeepsService } from "../services/VaultKeepsService"
 import { keepsService } from "../services/KeepsService"
 export default {
   setup() {
+    const route = useRoute()
     const router = useRouter()
     const editable = ref({})
     return {
+      route,
       router,
       editable,
       activeKeep: computed(() => AppState.activeKeep),
       account: computed(() => AppState.account),
       myVaults: computed(() => AppState.myVaults),
+      user: computed(() => AppState.user),
       isKept: computed(() => AppState.keeps.find(k => k.id == AppState.activeKeep.id)),
       async createVaultKeep(vaultId) {
         try {
@@ -117,7 +123,6 @@ export default {
           await vaultKeepsService.createVaultKeep(newVaultKeep)
           Pop.toast('Added to your vault', 'success')
           Modal.getOrCreateInstance(document.getElementById('active-keep')).hide()
-          router.push({ name: "Vault", params: { id: vaultId } })
         } catch (error) {
           logger.error(error)
           Pop.toast(error.message, 'error')

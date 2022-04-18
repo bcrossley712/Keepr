@@ -59,7 +59,6 @@ namespace Keepr.Repositories
       return _db.Query<Profile, VaultsKeepsViewModel, VaultKeep, VaultsKeepsViewModel>(sql, (a, k, vk) =>
       {
         k.Creator = a;
-        k.VaultId = vk.VaultId;
         k.VaultKeepId = vk.Id;
         return k;
       }, new { vaultId }).ToList();
